@@ -1,0 +1,6 @@
+/static/
+/cache/
+/venv/
+/.idea/
+
+/.env

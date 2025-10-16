@@ -1,0 +1,54 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    {% load static %}
+    <div class="card border-0">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <figure>
+                        <img src="{{ profile.avatar.url }}" class="img-fluid rounded-0" alt="{{ profile }}">
+                    </figure>
+                </div>
+                <div class="col-md-9">
+                    <h3 class="card-title">
+                        {{ profile }}
+                    </h3>
+                    <div class="card-text">
+                        <ul>
+                            <li>Никнейм: {{ profile.user.username }}</li>
+                            {% if profile.user.get_full_name %}
+                                <li>Имя и фамилия: {{ profile.user.get_full_name }}</li> {% endif %}
+                            <li>Заходил: {{ profile.user.last_login }} | {% if profile.is_online %}Онлайн{% else %}Не в
+                                сети{% endif %}</li>
+                            <li>Дата рождения: {{ profile.birth_date }}</li>
+                            <li>О себе: {{ profile.bio }}</li>
+                        </ul>
+                        {% if request.user == profile.user %}
+                            <a href="{% url 'profile_edit' %}" class="btn btn-sm btn-primary">
+                                Редактировать профиль
+                            </a>
+                            <a href="{% url 'password_change' %}" class="btn btn-sm btn-primary ms-2">
+                                Изменить пароль
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div><h4>Статьи, опубликованные автором:</h4></div>
+    {% for post in posts %}
+        <div class="card mb-3 p-3">
+            <h5 class="card-title">
+                <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+            </h5>
+            <p class="card-text">{{ post.description|safe }}</p>
+            <small>Рейтинг: {{ post.get_sum_rating }} / Дата публикации: {{ post.create }}</small>
+        </div>
+    {% empty %}
+        <h5>У данного автора пока нет постов</h5>
+    {% endfor %}
+    <script src="{% static 'ratings.js' %}"></script>
+    {% block script %}{% endblock %}
+{% endblock %}
